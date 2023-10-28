@@ -5,12 +5,12 @@ import chipPfp from "../assets/chip.svg";
 import personPfp from "../assets/person.svg";
 import sendSvg from "../assets/send.svg";
 
-import { useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 
-const SendMessage = ({ scroll }) => {
+const scrolller = ({ scroll }) => {
 
-   const sendMessage = async (event) => {
+   const scroller = async (event) => {
       scroll.current.scrollIntoView({ behavior: "smooth" });
    };
 };
@@ -61,17 +61,26 @@ export default function ChatWindow() {
       }],
    ])
 
-   const [messagess, setMessagess] = useState([
-      "one", "two"
-   ])
+   const [chatText, setChatText] = useState("")
+
+   const sendMessage = useMutation(api.functions.sendMessage);
+
+   const handleChatTextChange = (event: any) => {
+      setChatText(event.target.value);
+   }
+
+   const handleSendMessage = () => {
+      sendMessage({ text: chatText });
+      setChatText("")
+   }
 
    useEffect(() => {
       messages.sort((a, b) => a[0]["timestamp_ms"] - b[0]["timestamp_ms"])
    }, messages)
 
    useEffect(() => {
-      console.log(messages.length)
-   }, [])
+      console.log(chatText);
+   }, [chatText])
 
    return <>
       <Paper className="chatWindowFrame" elevation={1} sx={{ minHeight: "200px", maxHeight: "250px", position: "relative", display: "flex" }}>
@@ -89,10 +98,12 @@ export default function ChatWindow() {
          <Box className="chatboxContainer" sx={{ bottom: 0, position: "absolute", backgroundColor: "#eaebff", width: "100%", height: "64px" }}>
             <Box className="chatboxRelative" sx={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                <Box className="sendMessageContainer" sx={{ display: "flex", width: "100%", paddingLeft: "10px" }}>
-                  <TextField sx={{ flexGrow: 1, backgroundColor: "#ffffff" }} className="messageTextField" placeholder="Enter a question here"></TextField>
-                  <Button sx={{ borderRadius: "100px", userSelect: "none", outline: "none", '.MuiOutlinedInput-notchedOutline': { border: 0 } }}><Avatar sx={{
-                     width: "24px", height: "24px", borderRadius: "0"
-                  }} src={sendSvg}></Avatar></Button>
+                  <TextField sx={{ flexGrow: 1, backgroundColor: "#ffffff" }} className="messageTextField" placeholder="Enter a question here" onChange={handleChatTextChange} value={chatText}></TextField>
+                  <Button sx={{ borderRadius: "100px", userSelect: "none", outline: "none", ":focus": { outline: "none" } }} onClick={handleSendMessage}>
+                     <Avatar sx={{
+                        width: "24px", height: "24px", borderRadius: "0"
+                     }} src={sendSvg}></Avatar>
+                  </Button>
                </Box>
             </Box>
          </Box>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 
 import UploadButton from './components/uploadButton';
+import ChatWindow from './components/chatWindow';
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
          </div>
          <div className="mainContainer">
             <UploadButton></UploadButton>
+            <ChatWindow></ChatWindow>
          </div>
          <div className="infoContainer" id="infoCont"></div>
          <div className="footerContainer"></div>

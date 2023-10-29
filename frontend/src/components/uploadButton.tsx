@@ -1,62 +1,53 @@
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { useUploadFiles } from "./useUploadFilesAlex";
-import { FormEvent, useRef, useState } from "react";
-import { styled } from "@mui/material/styles"
-
-const VisuallyHiddenInput = styled('input')({
-   clip: 'rect(0 0 0 0)',
-   clipPath: 'inset(50%)',
-   height: 1,
-   overflow: 'hidden',
-   position: 'absolute',
-   bottom: 0,
-   left: 0,
-   whiteSpace: 'nowrap',
-   width: 1,
-});
+import { FormEvent, useState } from "react";
+import { tes_OCR, pdf_to_png, file_eval, translation } from "../process-utils";
 
 export default function UploadButton() {
 
-   const generateUploadUrl = useMutation(api.functions.generateUploadUrl);
-   const { startUpload } = useUploadFiles(generateUploadUrl);
+   const sendParsedText = useMutation(api.functions.sendParsedText);
+   const [imagePath, setImagePath] = useState("");
+   const [text, setText] = useState("");
+   // Change user name in chatWindow.tsx too
+   const [user, setUser] = useState("Danny")
 
-   const imageInput = useRef<HTMLInputElement>(null);
-   const hiddenFileInput = useRef(null);
-   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+   function submitForm(e) {
+      e.preventDefault()
+      console.log(imagePath, "is the url")
 
-   async function handleSendImage(e: FormEvent) {
-      e.preventDefault();
-
-      // @ts-ignore
-      if (selectedImage == null) {
-         return;
+      if (file_eval(imagePath) === "application/pdf") {
+         console.log("ispdf");
       }
-      const res = await startUpload([selectedImage]);
-      console.log(res);
 
-
-      // setSelectedImage(null);
-      // imageInput.current!.value = "";
+      const result = tes_OCR(imagePath)
+         .catch(err => {
+            console.error("handleClick error: ", err);
+         })
+         .then(result => {
+            let text = result;
+            setText(translation(text));
+            console.log(text);
+            sendParsedText({ text: text, user: user });
+         })
    }
 
-   const handleClick = (event) => {
-      hiddenFileInput.current.click();
-   };
-
    return <>
+      <div className="currentImgContainer">
+         <img
+            src={imagePath} className="fileImage" alt="File for upload" />
+      </div>
       <div className="fileUploadContainer">
-         <form action="submit" onSubmit={handleSendImage}>
-            <button className="button-upload" onClick={handleClick}>
-               Upload a file
-
-            </button>
+         <form action="submit" onSubmit={submitForm}>
+            {/* <button className="button-upload" onClick={handleClick}>
+               Select a file
+            </button> */}
             <input
+               className="button-upload"
                type="file"
-               accept="image/*"
-               onChange={(event) => setSelectedImage(event.target.files![0])}
-               ref={hiddenFileInput}
-               style={{ display: 'none' }} // Make the file input element invisible
+               accept="image/png"
+               onChange={(event) => {
+                  setImagePath(URL.createObjectURL(event.target.files![0]));
+               }}
             />
             <input
                type="submit" value={"Upload"} className="uploadButton" />

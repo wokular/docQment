@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Box } from '@mui/material';
 import './App.css'
 import './components/chatWindow.css'
 
@@ -18,7 +19,9 @@ function App() {
             <UploadButton></UploadButton>
             <ChatWindow></ChatWindow>
          </div>
-         <div className="infoContainer" id="infoCont"></div>
+         <div className="infoContainer" id="infoCont">
+            <Box className="textDqscan" sx={{ margin: "20px", padding: "20px" }}>Welcome to DocuQ! As a web based development  we aim to help users understand documents by uploading pictures.Upload a document down below and feel free to ask our chatbot about your document.</Box>
+         </div>
          <div className="footerContainer"></div>
       </>
    )

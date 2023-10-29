@@ -9,13 +9,6 @@ import trashSvg from "../assets/trash.svg";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 
-// const scrolller = ({ scroll }) => {
-
-//    const scroller = async (event) => {
-//       scroll.current.scrollIntoView({ behavior: "smooth" });
-//    };
-// };
-
 const MessageBubble = (props: any) => {
    return <>
       <Box className="messageLineContainer" sx={{ flexDirection: (props.human ? "row" : "row-reverse"), display: "flex", marginTop: "8px", marginBottom: "8px", alignItems: "center" }}>
@@ -26,7 +19,6 @@ const MessageBubble = (props: any) => {
          <Avatar alt="pfp" sx={{ width: "28px", height: "28px" }} src={props.human ? personPfp : chipPfp}></Avatar>
       </Box >
    </>
-
 }
 
 export default function ChatWindow() {
@@ -66,7 +58,7 @@ export default function ChatWindow() {
             {
 
                chatMessages?.map(element => {
-                  return <MessageBubble key={element["_createdAt"]} human={element["human"]} text={element["text"]}>Test</MessageBubble>
+                  return <MessageBubble key={"Ignore this key"} human={element["human"]} text={element["text"]}>Test</MessageBubble>
                })
             }
             {/* <span ref={scroll}></span> */}

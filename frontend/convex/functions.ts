@@ -3,9 +3,7 @@ import { api, internal } from "./_generated/api"
 import { v } from "convex/values";
 
 import OpenAI from "openai";
-const openai = new OpenAI({apiKey: "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"});
-
-// import { askGpt } from "./temp";
+const openai = new OpenAI();
 
 export const sendMessage = action({
    args: { 
@@ -62,13 +60,7 @@ export const gptAnalysis = internalAction({
    },
    handler: async (ctx, args) => {
       console.log("Inside GPT Analyis")
-      const apiKey = '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';
       const apiUrl = 'https://api.openai.com/v1/chat/completions';
-
-      const headers = {
-         Authorization: 'Bearer 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',
-         "content-type": 'application/json',
-      };
 
       const data = {
          prompt: 'A user asked this question. Respond to them to the best of your ability. If you do not know the answer, do not say so, but merely apologize that you cannot help. Here is the user input: ' + query,
@@ -80,7 +72,7 @@ export const gptAnalysis = internalAction({
 
       const completion = await openai.chat.completions.create({
          messages: [{ role: "assistant", content: data.prompt }],
-         model: data.model,
+         model: data.model, temperature: .9,
       });
 
       console.log(completion.choices[0], completion.choices[0]["message"]["content"]);

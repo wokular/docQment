@@ -44,6 +44,11 @@ export function url_gen() {
 }
 */
 
+// Getting Link from Convex
+
+
+// 
+
 // Tesseract OCR
 export async function tes_OCR(imageUrl) {
     // Precondition: supported file type

@@ -17,7 +17,7 @@ import { franc } from 'franc';
 import { axios } from 'axios';
 
 // OpenAPI setup
-const OPENAI_API_KEY = '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';
+const OPENAI_API_KEY = '';
 const OPENAI_ENDPOINT = 'https://api.openai.com/v1/engines/davinci-codex/completions';
 
 // Function to check fileType

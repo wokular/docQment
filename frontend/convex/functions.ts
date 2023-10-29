@@ -2,7 +2,10 @@ import { mutation, query, internalAction, internalMutation, action } from "./_ge
 import { api, internal } from "./_generated/api"
 import { v } from "convex/values";
 
-import { askGpt } from "./temp";
+import OpenAI from "openai";
+const openai = new OpenAI({apiKey: "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"});
+
+// import { askGpt } from "./temp";
 
 export const sendMessage = action({
    args: { 
@@ -14,8 +17,9 @@ export const sendMessage = action({
 
       await ctx.runMutation(internal.functions.addToDatabase, {user: args.user, text: args.text, human: true,
       timestamp_ms: Date.now()})
+      console.log("Asking GPT")
       await ctx.runAction(internal.functions.gptAnalysis, {text: args.text})
-      
+      console.log("Here")
    }
 });
 
@@ -43,7 +47,6 @@ export const addToDatabase = internalMutation({
       timestamp_ms: v.number(),
    },
    handler: async (ctx, args) => {
-
       await ctx.db.insert("chats".concat(args.user), {
       text: args.text,
       human: args.human,
@@ -53,36 +56,37 @@ export const addToDatabase = internalMutation({
    },
 })
 
-// export const gptAction = action({
-//    args: { 
-//       text: v.string(), 
-//       user: v.string(),
-//    },
-//    handler: async (ctx, args) => {
-
-//       await ctx.db.insert("chats".concat(args.user), {
-//       text: args.text,
-//       human: true,
-//       timestamp_ms: Date.now(),
-
-//     });
-//     console.log("Received message:", args.text)
-//       await ctx.runAction(api.functions.gptAnalysis, {
-//          text: args.text
-//       })
-      
-//    },
-// })
-
-
 export const gptAnalysis = internalAction({
    args: {
       text: v.string()
    },
    handler: async (ctx, args) => {
-      const response = await askGpt(args.text);
+      console.log("Inside GPT Analyis")
+      const apiKey = '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';
+      const apiUrl = 'https://api.openai.com/v1/chat/completions';
+
+      const headers = {
+         Authorization: 'Bearer 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',
+         "content-type": 'application/json',
+      };
+
+      const data = {
+         prompt: 'A user asked this question. Respond to them to the best of your ability. If you do not know the answer, do not say so, but merely apologize that you cannot help. Here is the user input: ' + query,
+         model: "gpt-3.5-turbo"
+      };
+
+
+
+
+      const completion = await openai.chat.completions.create({
+         messages: [{ role: "assistant", content: data.prompt }],
+         model: data.model,
+      });
+
+      console.log(completion.choices[0], completion.choices[0]["message"]["content"]);
+
       await ctx.runMutation(internal.functions.sendBotMessage, {
-         text: response!,
+         text: completion.choices[0]["message"]["content"]!,
          user: "Danny"
       });
   }

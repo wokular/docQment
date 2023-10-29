@@ -1,21 +1,22 @@
-const apiKey = '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';
-const apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
+const apiKey = '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';
+const apiUrl = 'https://api.openai.com/v1/engines/davinci/completions';
 
 
 export async function askGpt(query) {
 
-   const headers = {
+   const headerss = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${apiKey}`,
    };
 
    const data = {
-      prompt: 'A user asked this question about a document upload. Assume the document upload failed. Respond to the best of your ability to this question with no context about the document. Ask the user clarifying questions if necessary. '.concat(query)
+      prompt: 'A user asked this question about a document upload. Assume the document upload failed. Respond to the best of your ability to this question with no context about the document. Ask the user clarifying questions if necessary. ' + query,
+      model: "gpt-3.5-turbo"
    };
 
    fetch(apiUrl, {
       method: 'POST',
-      headers: headers,
+      headers: headerss,
       body: JSON.stringify(data),
    })
       .then((response) => {
@@ -34,3 +35,5 @@ export async function askGpt(query) {
          return "error"
       });
 }
+
+// console.log(await askGpt("What is your name"))

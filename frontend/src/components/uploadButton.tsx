@@ -20,6 +20,8 @@ export default function UploadButton() {
          console.log("ispdf");
       }
 
+      if (imagePath == "") { return; }
+
       const result = tes_OCR(imagePath)
          .catch(err => {
             console.error("handleClick error: ", err);

@@ -6,7 +6,7 @@ import personPfp from "../assets/person.svg";
 import sendSvg from "../assets/send.svg";
 import trashSvg from "../assets/trash.svg";
 
-import { useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 
 const MessageBubble = (props: any) => {
@@ -27,7 +27,7 @@ export default function ChatWindow() {
    const [chatText, setChatText] = useState("")
    const [user, setUser] = useState("Danny")
 
-   const sendMessage = useMutation(api.functions.sendMessage);
+   const sendMessage = useAction(api.functions.sendMessage);
    const clearMessages = useMutation(api.functions.clearMessages);
    const chatMessages = useQuery(api.functions.getMessages, { chatName: "chats".concat(user) });
 

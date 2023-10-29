@@ -1,36 +1,25 @@
-import { mutation, query } from "./_generated/server";
-import { api } from "./_generated/api"
+import { mutation, query, internalAction, internalMutation, action } from "./_generated/server";
+import { api, internal } from "./_generated/api"
 import { v } from "convex/values";
 
-export const sendMessage = mutation({
+import { askGpt } from "./temp";
+
+export const sendMessage = action({
    args: { 
       text: v.string(), 
       user: v.string(),
    },
    handler: async (ctx, args) => {
+      console.log("Received message")
 
-      await ctx.db.insert("chats".concat(args.user), {
-      text: args.text,
-      human: true,
-      timestamp_ms: Date.now(),
-    });
-      console.log("Received message:", args.text)
-   },
+      await ctx.runMutation(internal.functions.addToDatabase, {user: args.user, text: args.text, human: true,
+      timestamp_ms: Date.now()})
+      await ctx.runAction(internal.functions.gptAnalysis, {text: args.text})
+      
+   }
 });
 
-export const clearMessages = mutation({
-   args: {
-      user: v.string()
-   },
-   handler: async(ctx, args) => {
-      const msgs = await ctx.db.query("chats".concat(args.user)).collect()
-      for (let i = 0; i < msgs.length; i++) {
-         ctx.db.delete(msgs[i]["_id"])
-      }
-   }
-})
-
-export const sendBotMessage = mutation({
+export const sendBotMessage = internalMutation({
    args: { 
       text: v.string(), 
       user: v.string()
@@ -45,6 +34,71 @@ export const sendBotMessage = mutation({
       console.log("Received message:", args.text)
    },
 });
+
+export const addToDatabase = internalMutation({
+   args: { 
+      user: v.string(),
+      text: v.string(),
+      human: v.boolean(),
+      timestamp_ms: v.number(),
+   },
+   handler: async (ctx, args) => {
+
+      await ctx.db.insert("chats".concat(args.user), {
+      text: args.text,
+      human: args.human,
+      timestamp_ms: args.timestamp_ms,
+
+    });
+   },
+})
+
+// export const gptAction = action({
+//    args: { 
+//       text: v.string(), 
+//       user: v.string(),
+//    },
+//    handler: async (ctx, args) => {
+
+//       await ctx.db.insert("chats".concat(args.user), {
+//       text: args.text,
+//       human: true,
+//       timestamp_ms: Date.now(),
+
+//     });
+//     console.log("Received message:", args.text)
+//       await ctx.runAction(api.functions.gptAnalysis, {
+//          text: args.text
+//       })
+      
+//    },
+// })
+
+
+export const gptAnalysis = internalAction({
+   args: {
+      text: v.string()
+   },
+   handler: async (ctx, args) => {
+      const response = await askGpt(args.text);
+      await ctx.runMutation(internal.functions.sendBotMessage, {
+         text: response!,
+         user: "Danny"
+      });
+  }
+})
+
+export const clearMessages = mutation({
+   args: {
+      user: v.string()
+   },
+   handler: async(ctx, args) => {
+      const msgs = await ctx.db.query("chats".concat(args.user)).collect()
+      for (let i = 0; i < msgs.length; i++) {
+         ctx.db.delete(msgs[i]["_id"])
+      }
+   }
+})
 
 
 export const getMessages = query({

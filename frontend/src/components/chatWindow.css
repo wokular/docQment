@@ -25,3 +25,24 @@
    height: auto;
 
 }
+
+.fileUploadContainer {
+   background: #f0f0f0;
+   padding: 20px;
+   display: flex;
+   justify-content: center;
+}
+
+.button-upload {
+   display: block;
+   margin: 10px 0;
+}
+
+.uploadButton {
+   background-color: white;
+   color: rgb(199, 115, 115);
+   padding: 10px 20px;
+   border-radius: 8px;
+   border: none;
+   cursor: pointer;
+}

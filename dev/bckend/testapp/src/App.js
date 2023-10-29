@@ -11,16 +11,19 @@ function App () {
     }
 
     const handleClick = () => {
-        console.log(file_eval(imagePath));
+        if (file_eval(imagePath) === "application/pdf") {
+            console.log("ispdf");
+        }
+
         const result = tes_OCR(imagePath)
-        .catch(err => {
-            console.error("handleClick error: ", err);
-        })
-        .then(result => {
-            let text = result;
-            setText(text);
-            console.log(text);
-        })
+            .catch(err => {
+                console.error("handleClick error: ", err);
+            })
+            .then(result => {
+                let text = result;
+                setText(text);
+                console.log(text);
+            })
     }
 
     return (

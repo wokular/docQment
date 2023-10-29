@@ -14,8 +14,8 @@
 import { createWorker } from 'tesseract.js';
 
 // Function to check fileType
-export function file_eval(imageUrl) {
-    fetch(imageUrl)
+export async function file_eval(imageUrl) {
+    return fetch(imageUrl)
     .then(response => {
         if (!response.ok) {
             throw new Error(`Network response was not ok: ${response.status}`);
@@ -24,6 +24,7 @@ export function file_eval(imageUrl) {
     })
     .then(contentType => {
         console.log("File type:", contentType);
+        return contentType;
     })
     .catch(error => {
         console.error("file_eval error: ", error);
@@ -31,39 +32,32 @@ export function file_eval(imageUrl) {
 }
 
 // Function to convert pdf to png
-/*
-export function pdf_to_png() {
+export async function pdf_to_png(imageUrl) {
     // lol nope
-}
-*/
-
-// Function to gen imageUrl, might not need?
-/*
-export function url_gen() {
     
 }
-*/
-
-// Getting Link from Convex
-
-
-// 
 
 // Tesseract OCR
 export async function tes_OCR(imageUrl) {
-    // Precondition: supported file type
-    const data_patt = /^data:image\/([a-zA-Z]*);base64,([^"]*)$/
-    if (!data_patt.test(imageUrl)) {
-        if (true) {}
+    // Precondition: supported file type    
+    const res = await file_eval(imageUrl);
+
+    if (res.startsWith("application/pdf")) {
+        imageUrl = await pdf_to_png(imageUrl);
     }
 
-    try {
-        const worker = await createWorker('eng');
-        const result = await worker.recognize(imageUrl);
-        await worker.terminate();
-        return result.data.text;
-    } catch (error) {
-        console.error('OCR error:', error);
-        throw(error);
+    if (res.startsWith("image/")) {
+        try {
+            const worker = await createWorker('eng');
+            const result = await worker.recognize(imageUrl);
+            await worker.terminate();
+            return result.data.text;
+        } catch (error) {
+            console.error('OCR error:', error);
+            throw(error);
+        }
+    } else {
+        console.log("wrong type dumbass");
+        // return("File error");
     }
 }

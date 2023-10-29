@@ -1,3 +1,4 @@
-# CalHack23
+# DocuQ
 
-i wanna kiss nick soun on mouf rn
+## About:
+https://devpost.com/software/docq

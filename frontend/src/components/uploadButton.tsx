@@ -1,6 +1,6 @@
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { tes_OCR, pdf_to_png, file_eval, translation } from "../process-utils";
 
 export default function UploadButton() {
@@ -10,6 +10,7 @@ export default function UploadButton() {
    const [text, setText] = useState("");
    // Change user name in chatWindow.tsx too
    const [user, setUser] = useState("Danny")
+   const [uploadButtonText, setUploadButtonText] = useState("Upload")
 
    function submitForm(e) {
       e.preventDefault()
@@ -28,8 +29,20 @@ export default function UploadButton() {
             setText(translation(text));
             console.log(text);
             sendParsedText({ text: text, user: user });
+            setUploadButtonText("Uploaded")
+            setTimeout(() => {
+               setUploadButtonText("Upload")
+            }, 2000)
          })
    }
+
+   useEffect(() => {
+      if (imagePath != "") {
+         setUploadButtonText("Ready for upload")
+      } else {
+         setUploadButtonText("Upload")
+      }
+   }, [imagePath])
 
    return <>
       <div className="currentImgContainer">
@@ -50,7 +63,7 @@ export default function UploadButton() {
                }}
             />
             <input
-               type="submit" value={"Upload"} className="uploadButton" />
+               type="submit" value={uploadButtonText} className="uploadButton" />
          </form>
       </div>
    </>

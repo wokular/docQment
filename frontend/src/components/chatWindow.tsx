@@ -4,16 +4,17 @@ import { Paper, Box, Typography, Avatar, TextField, Button } from "@mui/material
 import chipPfp from "../assets/chip.svg";
 import personPfp from "../assets/person.svg";
 import sendSvg from "../assets/send.svg";
+import trashSvg from "../assets/trash.svg";
 
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 
-const scrolller = ({ scroll }) => {
+// const scrolller = ({ scroll }) => {
 
-   const scroller = async (event) => {
-      scroll.current.scrollIntoView({ behavior: "smooth" });
-   };
-};
+//    const scroller = async (event) => {
+//       scroll.current.scrollIntoView({ behavior: "smooth" });
+//    };
+// };
 
 const MessageBubble = (props: any) => {
    return <>
@@ -30,70 +31,45 @@ const MessageBubble = (props: any) => {
 
 export default function ChatWindow() {
 
-   const [documentUploaded, setDocumentUploaded] = useState<Boolean>(false);
-
-   // const messages = useQuery(api.messages.get);
-   const [messages, setMessages] = useState([
-      [{
-         "human": true,
-         "text": "So what do we have to do now?",
-         "timestamp_ms": 1698482878410,
-      }],
-      [{
-         "human": false,
-         "text": "What do you mean?",
-         "timestamp_ms": 1698482888410,
-      }],
-      [{
-         "human": true,
-         "text": "In terms of accessing the legal documents required to start a new fund in Florida for my house and property.",
-         "timestamp_ms": 1698482898410,
-      }],
-      [{
-         "human": true,
-         "text": "If that makes sense",
-         "timestamp_ms": 1698482908410,
-      }],
-      [{
-         "human": false,
-         "text": "I understand, one moment while I check for you.",
-         "timestamp_ms": 1698482918410,
-      }],
-   ])
 
    const [chatText, setChatText] = useState("")
+   const [user, setUser] = useState("Danny")
 
    const sendMessage = useMutation(api.functions.sendMessage);
+   const clearMessages = useMutation(api.functions.clearMessages);
+   const chatMessages = useQuery(api.functions.getMessages, { chatName: "chats".concat(user) });
 
    const handleChatTextChange = (event: any) => {
       setChatText(event.target.value);
    }
 
    const handleSendMessage = () => {
-      sendMessage({ text: chatText });
+      sendMessage({ text: chatText, user: user });
       setChatText("")
    }
 
-   useEffect(() => {
-      messages.sort((a, b) => a[0]["timestamp_ms"] - b[0]["timestamp_ms"])
-   }, messages)
+   const handleClearMessages = () => {
+      clearMessages({ user: user });
+   }
 
    useEffect(() => {
-      console.log(chatText);
-   }, [chatText])
+      const el = document.getElementById('chatWrapper');
+      // id of the chat container ---------- ^^^
+      if (el) {
+         el.scrollTop = el.scrollHeight;
+      }
+   }, [chatMessages])
 
    return <>
-      <Paper className="chatWindowFrame" elevation={1} sx={{ minHeight: "200px", maxHeight: "250px", position: "relative", display: "flex" }}>
-         <Box className="messageboxContainer" sx={{ padding: "20px", width: "100%", marginBottom: "48px", overflow: "scroll" }}>
-            {/*
-            // @ts-ignore */}
+      <Paper className="chatWindowFrame" elevation={1} sx={{ minHeight: "200px", maxHeight: "250px", position: "relative", display: "flex", marginTop: "30px", backgroundColor: "#fafafd" }}>
+         <Box className="messageboxContainer" id="chatWrapper" sx={{ padding: "20px", width: "100%", marginBottom: "48px", overflow: "scroll" }}>
             {
 
-               messages?.map(element => {
-                  return <MessageBubble human={element[0]["human"]} text={element[0]["text"]}>Test</MessageBubble>
+               chatMessages?.map(element => {
+                  return <MessageBubble key={element["_createdAt"]} human={element["human"]} text={element["text"]}>Test</MessageBubble>
                })
             }
-            <span ref={scroll}></span>
+            {/* <span ref={scroll}></span> */}
          </Box>
          <Box className="chatboxContainer" sx={{ bottom: 0, position: "absolute", backgroundColor: "#eaebff", width: "100%", height: "64px" }}>
             <Box className="chatboxRelative" sx={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -104,9 +80,14 @@ export default function ChatWindow() {
                         width: "24px", height: "24px", borderRadius: "0"
                      }} src={sendSvg}></Avatar>
                   </Button>
+                  <Button sx={{ borderRadius: "100px", userSelect: "none", outline: "none", ":focus": { outline: "none" } }} onClick={handleClearMessages}>
+                     <Avatar sx={{
+                        width: "24px", height: "24px", borderRadius: "0"
+                     }} src={trashSvg}></Avatar>
+                  </Button>
                </Box>
             </Box>
          </Box>
-      </Paper>
+      </Paper >
    </>
 }

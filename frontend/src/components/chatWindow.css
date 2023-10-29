@@ -1,1 +1,17 @@
 .humanMessage {}
+
+.fileSelect {
+   border-radius: 10px;
+   background-color: #3f36ff;
+   border: none;
+}
+
+.button-upload {
+   margin-top: 20px;
+   background: linear-gradient(90deg, rgba(212, 67, 67, 1) 0%, rgba(113, 9, 121, 1) 100%);
+   color: white;
+   width: 180px;
+   height: 60px;
+}
+
+.uploadButton {}

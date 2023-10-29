@@ -1,3 +1,7 @@
+// dhonk
+
+// App.js: test client for process-utils.js also demo for how it works
+
 import { tes_OCR, pdf_to_png, file_eval } from "./process-utils";
 import React, { useEffect, useState } from 'react';
 import './App.css';

@@ -1,46 +1,46 @@
 import { tes_OCR, pdf_to_png, file_eval, translation } from "./process-utils";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
-function App () {
+function App() {
     const [imagePath, setImagePath] = useState(null);
     const [text, setText] = useState(null);
 
-    const handleChange = (event) => {
-        setImagePath(URL.createObjectURL(event.target.files[0]));
-    }
+    const handleClick = async (event) => {
+        const file = event.target.files[0];
+        const fileType = file_eval(URL.createObjectURL(file));
 
-    const handleClick = () => {
-        if (file_eval(imagePath) === "application/pdf") {
-            console.log("ispdf");
+        if (fileType === "application/pdf") {
+            // Handle PDF conversion if needed
+            const pdfImagePath = await pdf_to_png(URL.createObjectURL(file));
+            setImagePath(pdfImagePath);
+        } else {
+            setImagePath(URL.createObjectURL(file));
         }
 
-        const result = tes_OCR(imagePath)
-            .catch(err => {
-                console.error("handleClick error: ", err);
-            })
-            .then(result => {
-                let text = result;
-                setText(translation(text));
-                console.log(text);
-            })
+        try {
+            const result = await tes_OCR(imagePath);
+            let extractedText = result;
+            setText(translation(extractedText));
+            console.log(extractedText);
+        } catch (err) {
+            console.error("handleClick error: ", err);
         }
+    };
 
     return (
         <div className="App">
             <main className="App-main">
                 <h3>Upload:</h3>
-                <img 
-                    src={imagePath} className="App-image" alt="logo"/>
+                <img src={imagePath} className="App-image" alt="logo" />
                 <h3>Extracted Text:</h3>
                 <div className="text-box">
-                    <p> { text } </p>
+                    <p>{text}</p>
                 </div>
-                <input type="file" onChange={handleChange} />
-                <button onClick={handleClick} style={{height:50}}>convert to text</button>
+                <input type="file" onChange={handleClick} />
             </main>
         </div>
     );
 }
 
-export default App
+export default App;

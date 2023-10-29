@@ -8,10 +8,17 @@
 
 // Dependencies:
 //      Tesseract
-//      
+//      langdetect
+//      axios
 
 // Import statements
 import { createWorker } from 'tesseract.js';
+import { franc } from 'franc';
+import { axios } from 'axios';
+
+// OpenAPI setup
+const OPENAI_API_KEY = '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';
+const OPENAI_ENDPOINT = 'https://api.openai.com/v1/engines/davinci-codex/completions';
 
 // Function to check fileType
 export async function file_eval(imageUrl) {
@@ -48,7 +55,7 @@ export async function tes_OCR(imageUrl) {
 
     if (res.startsWith("image/")) {
         try {
-            const worker = await createWorker('eng');
+            const worker = await createWorker('eng+kor');
             const result = await worker.recognize(imageUrl);
             await worker.terminate();
             return result.data.text;
@@ -60,4 +67,16 @@ export async function tes_OCR(imageUrl) {
         console.log("wrong type dumbass");
         // return("File error");
     }
+}
+
+// Language detection
+export function detect_language(text) {
+    return franc(text) || 'en'; // Default to English if language detection fails
+}
+
+// Interaction with OpenAI to translate
+export function translation(inputText) {
+    let balls = detect_language(inputText);
+    console.log(balls);
+    return inputText;
 }

@@ -1,4 +1,4 @@
-import { tes_OCR, pdf_to_png, file_eval } from "./process-utils";
+import { tes_OCR, pdf_to_png, file_eval, translation } from "./process-utils";
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
@@ -21,10 +21,10 @@ function App () {
             })
             .then(result => {
                 let text = result;
-                setText(text);
+                setText(translation(text));
                 console.log(text);
             })
-    }
+        }
 
     return (
         <div className="App">

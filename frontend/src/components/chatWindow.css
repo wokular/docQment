@@ -1,0 +1,47 @@
+.fileSelect {
+   border-radius: 10px;
+   background-color: #3f36ff;
+   border: none;
+}
+
+.button-upload {
+   margin-top: 20px;
+   background: linear-gradient(90deg, rgba(212, 67, 67, 1) 0%, rgba(113, 9, 121, 1) 100%);
+   color: white;
+   width: 180px;
+   height: 60px;
+}
+
+.currentImgContainer {
+   display: flex;
+   justify-content: center;
+}
+
+.fileImage {
+   display: block;
+   max-width: 450px;
+   max-height: 250px;
+   width: auto;
+   height: auto;
+
+}
+
+.fileUploadContainer {
+   padding: 20px;
+   display: flex;
+   justify-content: center;
+}
+
+.button-upload {
+   display: block;
+   margin: 10px 0;
+}
+
+.uploadButton {
+   background-color: white;
+   color: rgb(199, 115, 115);
+   padding: 10px 20px;
+   border-radius: 8px;
+   border: none;
+   cursor: pointer;
+}

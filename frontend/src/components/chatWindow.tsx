@@ -27,7 +27,7 @@ export default function ChatWindow() {
    const [chatText, setChatText] = useState("")
    const [user, setUser] = useState("Danny")
 
-   const sendMessage = useAction(api.functions.sendMessage);
+   const sendMessage = useAction(api.nodeEnvActions.sendMessage);
    const clearMessages = useMutation(api.functions.clearMessages);
    const chatMessages = useQuery(api.functions.getMessages, { chatName: "chats".concat(user) });
 
@@ -56,12 +56,10 @@ export default function ChatWindow() {
       <Paper className="chatWindowFrame" elevation={1} sx={{ minHeight: "200px", maxHeight: "250px", position: "relative", display: "flex", marginTop: "30px", backgroundColor: "#fafafd" }}>
          <Box className="messageboxContainer" id="chatWrapper" sx={{ padding: "20px", width: "100%", marginBottom: "48px", overflow: "scroll" }}>
             {
-
                chatMessages?.map(element => {
-                  return <MessageBubble key={"Ignore this key"} human={element["human"]} text={element["text"]}>Test</MessageBubble>
+                  return <MessageBubble key={element["_id"]} human={element["human"]} text={element["text"]}>Test</MessageBubble>
                })
             }
-            {/* <span ref={scroll}></span> */}
          </Box>
          <Box className="chatboxContainer" sx={{ bottom: 0, position: "absolute", backgroundColor: "#eaebff", width: "100%", height: "64px" }}>
             <Box className="chatboxRelative" sx={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>

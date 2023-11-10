@@ -1,11 +1,11 @@
 import { useMutation, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { FormEvent, useEffect, useState } from "react";
-import { tes_OCR, pdf_to_png, file_eval, translation } from "../process-utils";
+import { useEffect, useState } from "react";
+import { tes_OCR, file_eval } from "../process-utils";
 
 export default function UploadButton() {
 
-   const sendParsedText = useMutation(api.functions.sendParsedText);
+   const sendParsedText = useAction(api.nodeEnvActions.userDocumentTextUpload);
    const [imagePath, setImagePath] = useState("");
    const [text, setText] = useState("");
    // Change user name in chatWindow.tsx too
@@ -28,7 +28,7 @@ export default function UploadButton() {
          })
          .then(result => {
             let text = result;
-            setText(translation(text));
+            // setText(translation(text));
             console.log(text);
             sendParsedText({ text: text, user: user });
             setUploadButtonText("Uploaded")

@@ -22,20 +22,18 @@ export default function UploadButton() {
 
       if (imagePath == "") { return; }
 
-      const result = tes_OCR(imagePath)
-         .catch(err => {
-            console.error("handleClick error: ", err);
-         })
-         .then(result => {
-            let text = result;
-            // setText(translation(text));
-            console.log(text);
-            sendParsedText({ text: text, user: user });
-            setUploadButtonText("Uploaded")
-            setTimeout(() => {
-               setUploadButtonText("Upload")
-            }, 2000)
-         })
+      tes_OCR(imagePath).catch((err: Error) => {
+         console.error("handleClick error: ", err);
+      }).then((result: any) => {
+         let text = result;
+         // text = translation(text);
+         console.log(text);
+         sendParsedText({ text: text, user: user });
+         setUploadButtonText("Uploaded")
+         setTimeout(() => {
+            setUploadButtonText("Upload")
+         }, 2000)
+      })
    }
 
    useEffect(() => {

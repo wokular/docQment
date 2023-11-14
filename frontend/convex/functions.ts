@@ -2,8 +2,6 @@ import { mutation, query, internalQuery, internalAction, internalMutation, actio
 import { api, internal } from "./_generated/api"
 import { v } from "convex/values";
 
-import {vectorizeAndStoreText} from "../convex/retrieval";
-
 export const handleUserSentMessage = internalMutation({
    args: { 
       user: v.string(),
@@ -24,7 +22,7 @@ export const handleUserSentMessage = internalMutation({
 export const handleBotSentMessage = internalMutation({
    args: { 
       user: v.string(), 
-      text: v.string()
+      text: v.any()
    },
    handler: async (ctx, args) => {
 
@@ -67,7 +65,6 @@ export const getChatHistoryInternal = internalQuery({
 })
 
 // Internal function to handle user queries and sending bot responses from retrieval qa with langchain
-
 export const userDocumentTextStorageInsert = internalMutation({
    args: {
       text: v.string(),

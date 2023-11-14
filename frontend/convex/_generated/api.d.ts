@@ -15,6 +15,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as functions from "../functions";
+import type * as langchain_db from "../langchain/db";
 import type * as nodeEnvActions from "../nodeEnvActions";
 import type * as retrieval from "../retrieval";
 
@@ -28,6 +29,7 @@ import type * as retrieval from "../retrieval";
  */
 declare const fullApi: ApiFromModules<{
   functions: typeof functions;
+  "langchain/db": typeof langchain_db;
   nodeEnvActions: typeof nodeEnvActions;
   retrieval: typeof retrieval;
 }>;

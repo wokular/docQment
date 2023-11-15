@@ -46,24 +46,24 @@ export default function UploadButton() {
 
    return <>
       <div className="currentImgContainer">
-         <img
-            src={imagePath} className="fileImage" alt="File for upload" />
+         <p className="imageDescText">{imagePath ? "Preview for currently selected image" : "No image selected yet"}</p>
+         <img src={imagePath ? imagePath : ""} className="fileImage" alt="" />
       </div>
       <div className="fileUploadContainer">
          <form action="submit" onSubmit={submitForm}>
-            {/* <button className="button-upload" onClick={handleClick}>
-               Select a file
-            </button> */}
-            <input
-               className="button-upload"
-               type="file"
-               accept="image/png"
-               onChange={(event) => {
-                  setImagePath(URL.createObjectURL(event.target.files![0]));
-               }}
-            />
-            <input
-               type="submit" value={uploadButtonText} className="uploadButton" />
+            <div className="file-input-container">
+               <input
+                  type="file"
+                  accept="image/png"
+                  id="file-input"
+                  className="file-input"
+                  onChange={(event) => {
+                     setImagePath(URL.createObjectURL(event.target.files![0]));
+                  }}
+               />
+               <label htmlFor="file-input" className="buttonForUpload">Choose File</label>
+            </div>
+            <input type="submit" value={uploadButtonText} className="uploadButton" />
          </form>
       </div>
    </>

@@ -36,12 +36,21 @@ export default function ChatWindow() {
    }
 
    const handleSendMessage = () => {
+      if (chatText == "") { return };
       sendMessage({ text: chatText, user: user });
       setChatText("")
    }
 
    const handleClearMessages = () => {
       clearMessages({ user: user });
+   }
+
+   const handleCheckEnter = (e: any) => {
+      if (e.keyCode == 13) {
+         if (chatText == "") { return };
+         sendMessage({ text: chatText, user: user });
+         setChatText("")
+      }
    }
 
    useEffect(() => {
@@ -53,7 +62,7 @@ export default function ChatWindow() {
    }, [chatMessages])
 
    return <>
-      <Paper className="chatWindowFrame" elevation={1} sx={{ minHeight: "200px", maxHeight: "250px", position: "relative", display: "flex", marginTop: "30px", backgroundColor: "#fafafd" }}>
+      <Paper className="chatWindowFrame" elevation={1} sx={{ minHeight: "300px", maxHeight: "400px", position: "relative", display: "flex", marginTop: "30px", backgroundColor: "#fafafd" }}>
          <Box className="messageboxContainer" id="chatWrapper" sx={{ padding: "20px", width: "100%", marginBottom: "48px", overflow: "scroll" }}>
             {
                chatMessages?.map(element => {
@@ -64,7 +73,7 @@ export default function ChatWindow() {
          <Box className="chatboxContainer" sx={{ bottom: 0, position: "absolute", backgroundColor: "#eaebff", width: "100%", height: "64px" }}>
             <Box className="chatboxRelative" sx={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                <Box className="sendMessageContainer" sx={{ display: "flex", width: "100%", paddingLeft: "10px" }}>
-                  <TextField sx={{ flexGrow: 1, backgroundColor: "#ffffff" }} className="messageTextField" placeholder="Enter a question here" onChange={handleChatTextChange} value={chatText}></TextField>
+                  <TextField sx={{ flexGrow: 1, backgroundColor: "#ffffff" }} className="messageTextField" placeholder="Enter a question here" onChange={handleChatTextChange} value={chatText} onKeyDown={handleCheckEnter}></TextField>
                   <Button sx={{ borderRadius: "100px", userSelect: "none", outline: "none", ":focus": { outline: "none" } }} onClick={handleSendMessage}>
                      <Avatar sx={{
                         width: "24px", height: "24px", borderRadius: "0"
